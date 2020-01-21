@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #chess-board{
+            /* width: 800px;
+            height: 800px; */
+            margin: 60px auto;
+            display: block;
+            border: 1px solid rgba(0,0,0,.2);
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+        }
+        #chess-board::before{
+            content: 'X';
+            position: absolute;
+            font-size: 30px;
+            left: -50px;
+            top: calc(50% - 20px)
+        }
+    </style>
+</head>
+<body>
+
+    <img src="resources/images/pawn.png" id="pawn">
+    <canvas width="800" height="800" id="chess-board">
+    </canvas>
+
+    <script src="resources/config/config.js"></script>
+    <script src="resources/figures/pawn.js"></script>
+    <script src="resources/figures/king.js"></script>
+    <script src="resources/figures/queen.js"></script>
+    <script src="resources/figures/bishop.js"></script>
+    <script src="resources/figures/knight.js"></script>
+    <script src="resources/figures/rook.js"></script>
+    <script src="resources/managers/BoardManager.js"></script>
+    <script src="resources/app.js"></script>
+</body>
+</html>
