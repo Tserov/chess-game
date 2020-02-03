@@ -6,6 +6,7 @@ var config = {
     FIGURES_LOCATION : [
         {
             figures : {
+                color : 'white',
                 pawn : {
                     row : 8,
                     col : 0
@@ -35,6 +36,7 @@ var config = {
         },
         {
             figures : {
+                color : 'black',
                 pawn : {
                     row : 1,
                     col : 0

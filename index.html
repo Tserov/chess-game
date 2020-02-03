@@ -9,27 +9,84 @@
         #chess-board{
             /* width: 800px;
             height: 800px; */
-            margin: 60px auto;
+            margin: 0px auto;
             display: block;
-            border: 1px solid rgba(0,0,0,.2);
-            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+            transition: all .5s;
+            position: relative;
+            box-shadow: 0px 0px 10px rgba(255,255,255,0.3);
+            border-right: 2px solid #4a371a;
+            border-top: 2px solid #4a371a;
         }
-        #chess-board::before{
-            content: 'X';
+        .game-wrap{
+            width: 800px;
+            /* height: 800px; */
+            margin: 60px auto;
+            display: block; 
+            position: relative;
+            box-shadow: -15px 15px 0 #4a371a;
+        }
+        .game-wrap::before{
+            content: '';
             position: absolute;
-            font-size: 30px;
-            left: -50px;
-            top: calc(50% - 20px)
+            left: -12px;
+            background: #4a371a;
+            top: 9px;
+            width: 30px;
+            height: 20px;
+            transform: rotate(48deg);
+        }
+        .game-wrap::after{
+            content: '';
+            position: absolute;
+            right: 2px;
+            background: #4a371a;
+            bottom: -9px;
+            width: 25px;
+            height: 22px;
+            z-index: -1;
+            transform: rotate(49deg);
         }
     </style>
 </head>
 <body>
+    <div style="display: none;" class="figure-images">
+        <img src="resources/images/pawn-black.png" id="pawn-black">
+        <img src="resources/images/pawn-white.png" id="pawn-white">
 
-    <img src="resources/images/pawn.png" id="pawn">
-    <canvas width="800" height="800" id="chess-board">
-    </canvas>
+        <img src="resources/images/bishop-black.png" id="bishop-black">
+        <img src="resources/images/bishop-white.png" id="bishop-white">
+
+        <img src="resources/images/knight-black.png" id="knight-black">
+        <img src="resources/images/knight-white.png" id="knight-white">
+
+        <img src="resources/images/queen-black.png" id="queen-black">
+        <img src="resources/images/queen-white.png" id="queen-white">
+
+        <img src="resources/images/rook-black.png" id="rook-black">
+        <img src="resources/images/rook-white.png" id="rook-white">
+
+        <img src="resources/images/king-black.png" id="king-black">
+        <img src="resources/images/king-white.png" id="king-white">
+
+    </div>
+    <div class="game-wrap">
+        <canvas width="800" height="800" id="chess-board">
+        </canvas>
+    </div>
+    
+
+    <div style="text-align: center;">
+        <h3>Choose Figures</h3>
+        <button class="choose-figures" data="white-figures">
+            White
+        </button>
+        <button class="choose-figures" data='black-figures'>
+            Black
+        </button>
+    </div>
 
     <script src="resources/config/config.js"></script>
+    <script src="resources/figures/MoveTrail.js"></script>
     <script src="resources/figures/pawn.js"></script>
     <script src="resources/figures/king.js"></script>
     <script src="resources/figures/queen.js"></script>
