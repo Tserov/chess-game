@@ -9,12 +9,21 @@ boardManager.init = function(canvas){
     this.blackFigures = [];
     this.activeFigures = [];
     this.isActiveMovementMode = false;
-    this.currentMovementTrail = {};
+    this.isActiveGameMode = false;
+    this.currentMovementTrails = [];
+    this.currentCoosenFigure = null;
 
+    // this.drawBoard(this.context);
+    // this.createFigures(this.context);
+    // this.initFigures(this.context);
+    // this.setActiveFigures(this.whiteFigures);
+}
+boardManager.startGame = function(){
     this.drawBoard(this.context);
     this.createFigures(this.context);
     this.initFigures(this.context);
-    this.setActiveFigures(this.blackFigures);
+    this.setActiveFigures(this.whiteFigures);
+    this.setGameMode(true);
 }
 
 boardManager.drawBoard = function(context){
@@ -22,13 +31,13 @@ boardManager.drawBoard = function(context){
         for (let y = 0; y < 10; y++) {
             if(x%2 == y%2){
                 context.beginPath();
-                context.rect(80*x, 80*y, 80, 80);
+                context.rect(config.FIGURE_SIZE*x, config.FIGURE_SIZE*y, config.FIGURE_SIZE, config.FIGURE_SIZE);
                 context.fillStyle = '#2F241B';
                 context.fill();
                 context.closePath();
             }else{
                 context.beginPath();
-                context.rect(80*x, 80*y, 80, 80);
+                context.rect(config.FIGURE_SIZE*x, config.FIGURE_SIZE*y, config.FIGURE_SIZE, config.FIGURE_SIZE);
                 context.fillStyle = '#e3bf88';
                 context.fill();
                 context.closePath();
@@ -117,16 +126,28 @@ boardManager.getClickedFigure = function(pointer){
 }
 
 boardManager.showFigureTrailMovement = function(pointer, activeFigure){
+    this.currentCoosenFigure = activeFigure;
     activeFigure.createMovementTrail(pointer, this.context, activeFigure);
-    this.setIsActiveMovementMode(true);
+    this.setActiveMovementMode(true);
 };
-
+boardManager.isClickedTrail = function(pointer, currentTrails){
+    var trail;
+    if(currentTrails.length > 0){
+        trail = currentTrails.filter(trail =>{
+            return pointer.col == trail.col && pointer.row == trail.row;
+        });
+        return trail.length > 0;
+    }
+    return false;
+};
 boardManager.makeMove = function(pointer){
-    if(pointer.col == this.currentMovementTrail.col && pointer.row == this.currentMovementTrail.row){
+    // console.log(this.isClickedTrail(pointer, this.currentMovementTrails));
+    if(this.isClickedTrail(pointer, this.currentMovementTrails)){
         console.log('Move the Figure');
         //move the figure
-        this.toggleActiveFigures();
+        this.currentCoosenFigure.move(pointer, this.currentCoosenFigure, this.context);
         this.clearMovementTrail();
+        this.setGameMode(false);
     }else{
         this.clearMovementTrail();
     }
@@ -137,7 +158,7 @@ boardManager.makeMove = function(pointer){
 }
 
 boardManager.clearMovementTrail = function(){
-    this.currentMovementTrail = {};
+    this.currentMovementTrails = [];
     boardManager.clear(this.context);
     this.initFigures(this.context);
     this.isActiveMovementMode = false;
@@ -146,11 +167,32 @@ boardManager.clearMovementTrail = function(){
 boardManager.toggleActiveFigures = function(){
     this.activeFigures = this.activeFigures[0].color === 'white' ? this.blackFigures : this.whiteFigures;
 }
-boardManager.setIsActiveMovementMode = function(mode){
+boardManager.setActiveMovementMode = function(mode){
     this.isActiveMovementMode = mode;
 }
-
+boardManager.setGameMode = function(mode){
+    this.isActiveGameMode = mode;
+}
 boardManager.clear = function(context) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     this.drawBoard(context);
 };
+
+boardManager.changePlayerTurn = function(){
+    this.toggleActiveFigures();
+    this.clear(this.context);
+    this.revertFiguresLocation(this.context);
+    this.setGameMode(true);
+}
+
+boardManager.revertFiguresLocation = function(context){
+    console.log('changed turn.');
+    this.whiteFigures.forEach(figure => {
+        figure.row = (9-figure.row);
+        figure.create(context);
+    });
+    this.blackFigures.forEach(figure => {
+        figure.row = (9-figure.row);
+        figure.create(context);
+    });
+}

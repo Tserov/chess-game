@@ -14,9 +14,48 @@ King.prototype.create = function(context){
     context.beginPath();
     const image = document.getElementById('king-' + this.color);
     context.drawImage(image, x, y, this.side, this.side);
-
-    // context.rect(x, y, this.side, this.side)
-    // context.fillStyle = this.color;
-    // context.fill();
     context.closePath();
+}
+
+King.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
+    console.log('here is the king');
+    var trailLocation = [
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col
+        },
+        {
+            row: currentPointerLocate.row + 1,
+            col: currentPointerLocate.col
+        },
+        {
+            row: currentPointerLocate.row,
+            col: currentPointerLocate.col - 1
+        },
+        {
+            row: currentPointerLocate.row,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row + 1,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row + 1,
+            col: currentPointerLocate.col - 1
+        }
+    ];
+    trailLocation.forEach(location => {
+        if(helpers.isThisLocationInTheBoard(location)){
+            var kingTrail = new MoveTrail({
+                row : location.row,
+                col : location.col,
+                name : 'King'
+            });
+            kingTrail.create(context);
+            boardManager.currentMovementTrails.push(kingTrail);    
+        }
+    });
+    
+    
 }
