@@ -57,42 +57,48 @@ boardManager.createFigures = function(context){
                 color: currentSteck.figures.color,
                 row: currentSteck.figures.pawn.row,
                 col: i,
-                name : "Pawn"
+                name: `Pawn-${currentSteck.figures.color}`,
+                points: currentSteck.figures.pawn.points,
             }));
         }
         currentTypeFigures.push(new King({
             row: currentSteck.figures.king.row,
             col: currentSteck.figures.king.col,
             color: currentSteck.figures.color,
-            name: 'King'
+            name: `King-${currentSteck.figures.color}`,
+            points: currentSteck.figures.king.points,
         }));
     
         currentTypeFigures.push(new Queen({
             row: currentSteck.figures.queen.row,
             col: currentSteck.figures.queen.col,
             color: currentSteck.figures.color,
-            name: 'Queen'
+            name: `Queen-${currentSteck.figures.color}`,
+            points: currentSteck.figures.queen.points,
         }));
     
         currentTypeFigures.push(new Bishop({
             row: currentSteck.figures.bishop.row,
             col: currentSteck.figures.bishop.col,
             color: currentSteck.figures.color,
-            name: 'Bishop'
+            name: `Bishop-${currentSteck.figures.color}`,
+            points: currentSteck.figures.bishop.points,
         }));
         
         currentTypeFigures.push(new Knight({
             row: currentSteck.figures.knight.row,
             col: currentSteck.figures.knight.col,
             color: currentSteck.figures.color,
-            name: 'Knight'
+            name: `Knight-${currentSteck.figures.color}`,
+            points: currentSteck.figures.knight.points,
         }));
     
         currentTypeFigures.push(new Rook({
             row: currentSteck.figures.rook.row,
             col: currentSteck.figures.rook.col,
             color: currentSteck.figures.color,
-            name: 'Rook'
+            name: `Rook-${currentSteck.figures.color}`,
+            points: currentSteck.figures.rook.points,
         }));
         
         if(index === 0){
@@ -129,6 +135,15 @@ boardManager.showFigureTrailMovement = function(pointer, activeFigure){
     this.currentCoosenFigure = activeFigure;
     activeFigure.createMovementTrail(pointer, this.context, activeFigure);
     this.setActiveMovementMode(true);
+    //to move into own method
+    var clickFigureMarker = new MoveTrail({
+        row : pointer.row,
+        col : pointer.col,
+        color : 'rgba(255,255,255, .6)'
+    });
+    clickFigureMarker.create(this.context);
+    // helpers.createTrail({row: pointer.row, col: pointer.col}, 'clicked-figure', this.context,'rgba(255,255,255, .6)');
+
 };
 boardManager.isClickedTrail = function(pointer, currentTrails){
     var trail;
@@ -141,20 +156,44 @@ boardManager.isClickedTrail = function(pointer, currentTrails){
     return false;
 };
 boardManager.makeMove = function(pointer){
-    // console.log(this.isClickedTrail(pointer, this.currentMovementTrails));
     if(this.isClickedTrail(pointer, this.currentMovementTrails)){
-        console.log('Move the Figure');
-        //move the figure
-        this.currentCoosenFigure.move(pointer, this.currentCoosenFigure, this.context);
+        this.currentCoosenFigure.move(pointer, this.currentCoosenFigure, this.currentMovementTrails); //move the figure
+        this.deleteFigureByLocation(pointer);
         this.clearMovementTrail();
         this.setGameMode(false);
     }else{
         this.clearMovementTrail();
     }
-    //to save info for current trail position and active figure
-    //check if current pointer is equal to current trail object(its position)
-    //if it is in - make a move with the active figure
-    //else delete trail and change isActiveMode to false
+}
+
+boardManager.addPoints = function(color, points){
+    console.log(points);
+    console.log('add ' + points.points + ' to ' + color + ' figures');
+}
+
+boardManager.deleteFigureByLocation = function(pointer){
+    var clickedTrail = helpers.findFigureByLocation(this.currentMovementTrails, pointer);
+    if(clickedTrail[0].color == 'red'){
+        switch (this.activeFigures[0].color) {
+            case 'black':
+                var points = helpers.findFigureByLocation(this.whiteFigures, pointer);
+                this.whiteFigures = //to do
+                this.whiteFigures.filter(figure => figure.col !== pointer.col || figure.row !== pointer.row);
+                this.addPoints('black', points[0]);
+                break;
+
+            case 'white':
+                var points = helpers.findFigureByLocation(this.blackFigures, pointer);
+                this.blackFigures = //to do
+                this.blackFigures.filter(figure => figure.col !== pointer.col || figure.row !== pointer.row);
+                this.addPoints('white', points[0]);
+                break;
+        
+            default:
+                break;
+        }
+        
+    }
 }
 
 boardManager.clearMovementTrail = function(){

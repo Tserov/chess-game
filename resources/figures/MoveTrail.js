@@ -2,7 +2,7 @@ var MoveTrail = function(moveTrailConfig){
     this.row = moveTrailConfig.row;
     this.col = moveTrailConfig.col;
     this.side = config.FIGURE_SIZE;
-    this.color = 'green';
+    this.color = moveTrailConfig.color ? moveTrailConfig.color : 'green';
 }
 
 MoveTrail.prototype.create = function(context){

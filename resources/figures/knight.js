@@ -3,7 +3,7 @@ var Knight = function(pawnObject){
     this.col = pawnObject.col;
     this.side = config.FIGURE_SIZE;
     this.name = pawnObject.name;
-
+    this.points = pawnObject.points;
     this.color = (pawnObject.color ? pawnObject.color : 'white');
 }
 
@@ -15,31 +15,66 @@ Knight.prototype.create = function(context){
     context.beginPath();
     const image = document.getElementById('knight-' + this.color);
     context.drawImage(image, x, y, this.side, this.side);
-    // context.rect(x, y, this.side, this.side)
-    // context.fillStyle = this.color;
-    // context.fill();
     context.closePath();
 }
 
-Knight.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
-    var row = currentFigure.color == 'black' ? currentPointerLocate.row + 3 : currentPointerLocate.row - 3;
-    var col = currentPointerLocate.col + 1;
-    var knightTrail = new MoveTrail({
-        row : row,
-        col : col,
-        name : 'Knight'
-    });
-    knightTrail.create(context);
-    boardManager.currentMovementTrails.push(knightTrail);
+Knight.prototype.filterAndCreateTrails = function(location, context){
+    var allFigures = boardManager.whiteFigures.concat(boardManager.blackFigures);
+    var oponentColor = boardManager.activeFigures[0].color == 'white' ? 'black' : 'white';
+    var currentFigure = helpers.findFigureByLocation(allFigures, location)[0];
+
+    if(!currentFigure){ //check if there are any of your own figures around, which stay on the current fig way
+        helpers.createTrail(location, 'King', context);
+    }else{
+        if(currentFigure.color == oponentColor){
+            var targetLocation = {row: currentFigure.row, col: currentFigure.col, target: true}
+            helpers.createTrail(targetLocation, 'King', context, 'red');
+        }
+    }
 }
-Knight.prototype.move = function(currentPointerLocate, currentFigure, context){
-    console.log(boardManager.currentMovementTrails);
-    boardManager.activeFigures.forEach((figure, index) => {
-        if(figure.col == currentFigure.col & figure.row == currentFigure.row){
-            var row = boardManager.activeFigures[index].row + 3;
-            var col = boardManager.activeFigures[index].col + 1;
-            boardManager.activeFigures[index].row = row;
-            boardManager.activeFigures[index].col = col;
+
+Knight.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
+    var knightMovementLocations = [
+        {
+            row: currentPointerLocate.row - 3,
+            col: currentPointerLocate.col - 1
+        },
+        {
+            row: currentPointerLocate.row - 3,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row + 3,
+            col: currentPointerLocate.col - 1
+        },
+        {
+            row: currentPointerLocate.row + 3,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row + 1,
+            col: currentPointerLocate.col - 3
+        },
+        {
+            row: currentPointerLocate.row + 1,
+            col: currentPointerLocate.col + 3
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col - 3
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col + 3
+        }
+    ];
+
+    knightMovementLocations.forEach(location => {
+        if(helpers.isThisLocationInTheBoard(location)){ //check and show only trails which are in the board
+            this.filterAndCreateTrails(location, context); 
         }
     });
+}
+Knight.prototype.move = function(currentPointerLocate, currentFigure){
+    helpers.setExactFigureLocation(boardManager.activeFigures, currentFigure, currentPointerLocate);
 }

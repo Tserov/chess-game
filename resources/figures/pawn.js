@@ -3,12 +3,11 @@ var Pawn = function(pawnObject){
     this.col = pawnObject.col;
     this.side = config.FIGURE_SIZE;
     this.name = pawnObject.name;
-    // this.image = this.image ? this.image : document.getElementById('pawn-white');
+    this.points = pawnObject.points;
     this.color = (pawnObject.color ? pawnObject.color : 'white');
 }
 
 Pawn.prototype.create = function(context){
-
     var x = (this.col * this.side);
     var y = (this.row * this.side);
     const image = document.getElementById('pawn-' + this.color);
@@ -17,65 +16,45 @@ Pawn.prototype.create = function(context){
     context.closePath();
 }
 
-// Pawn.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
-//     // console.log('----------');
-//     // console.log(currentPointerLocate);
-    
-//     //draw mark for move
-//     //row = currentPointerLocate.row + 1
-//     //col = currentPointerLocate.col
-//     console.log(currentFigure);
-//     boardManager.clear(context);
-//     boardManager.initFigures(context);
-//     this.createMovementTrail(currentPointerLocate, context, currentFigure);
-// }
-Pawn.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
-    var oponentFigures = currentFigure.color == 'white' ? boardManager.blackFigures : boardManager.whiteFigures;
-    var trailLocation = {
-        row: currentPointerLocate.row - 1,
-        col: currentPointerLocate.col
-    };
-    if(helpers.isThisLocationInTheBoard(trailLocation)){ //check && if there is your figures or oponent figures
-        var pawnTrail = new MoveTrail({
-            row : trailLocation.row,
-            col : trailLocation.col,
-            name : 'Pawn'
-        });
-        pawnTrail.create(context);
-        boardManager.currentMovementTrails.push(pawnTrail);
-        
+Pawn.prototype.filterAndCreateTrails = function(location, context, currentPointerLocate){
+    var allFigures = boardManager.whiteFigures.concat(boardManager.blackFigures);
+    var oponentColor = boardManager.activeFigures[0].color == 'white' ? 'black' : 'white';
+    var currentFigure = helpers.findFigureByLocation(allFigures, location)[0];
+    var forwardLocation = {row: currentPointerLocate.row - 1, col: currentPointerLocate.col};
 
-
-        // var figureToRemove = helpers.findFigureByLocation(oponentFigures, trailLocation)[0];
-
-        // if(figureToRemove){
-        //     console.log('here is figure to remove');
-        //     console.log(figureToRemove);
-        //     if(figureToRemove.color == 'white'){ 
-        //         boardManager.whiteFigures = boardManager.whiteFigures.filter(figure => {
-        //             figure.row != figureToRemove.row && figure.col != figureToRemove.col;
-        //         })
-        //     }else{
-        //         boardManager.blackFigures = boardManager.blackFigures.filter(figure => {
-        //             figure.row != figureToRemove.row && figure.col != figureToRemove.col;
-        //         })
-        //     }
-        // }
+    if(!currentFigure){ //check if there are any of your own figures around, which stay on the current fig way
+        helpers.createTrail(forwardLocation, 'King', context);
+    }else{
+        if(currentFigure.color == oponentColor && currentFigure.col !== forwardLocation.col){
+            var targetLocation = {row: currentFigure.row, col: currentFigure.col, target: true}
+            helpers.createTrail(targetLocation, 'King', context, 'red');
+        }
     }
-    
-    //check if there is a figure in the clicked trail part - to remove this figure
-    
 }
 
-Pawn.prototype.move = function(currentPointerLocate, currentFigure, context){
-    //get new location for the move from the current trail coordinates
-    console.log(boardManager.currentMovementTrails);
-    boardManager.activeFigures.forEach((figure, index) => {
-        if(figure.col == currentFigure.col & figure.row == currentFigure.row){
-            var row = boardManager.activeFigures[index].row - 1;
-            boardManager.activeFigures[index].row = row;
+Pawn.prototype.createMovementTrail = function(currentPointerLocate, context){
+    var trailLocation = [
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col - 1
+        }
+    ];
+    trailLocation.forEach(location =>{
+        if(helpers.isThisLocationInTheBoard(location)){ //check and show only trails which are in the board
+            this.filterAndCreateTrails(location, context, currentPointerLocate);
         }
     });
+    
 }
 
-//helpers
+Pawn.prototype.move = function(currentPointerLocate, currentFigure){
+    helpers.setExactFigureLocation(boardManager.activeFigures, currentFigure, currentPointerLocate);
+}

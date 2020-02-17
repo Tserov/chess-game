@@ -18,7 +18,6 @@ canvas.addEventListener('mousedown', function(e){
     var isActiveMovementMode = boardManager.isActiveMovementMode;
     var activeFigure = boardManager.getClickedFigure(pointer) ? boardManager.getClickedFigure(pointer) : null;
     console.log('col: ' + col + ', row: ' + row);
-
     if(boardManager.isActiveGameMode){
         if(isActiveMovementMode){
             boardManager.makeMove(pointer);

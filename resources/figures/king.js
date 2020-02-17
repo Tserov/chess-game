@@ -1,9 +1,9 @@
-var King = function(pawnObject){
-    this.row = pawnObject.row;
-    this.col = pawnObject.col;
+var King = function(kingConfig){
+    this.row = kingConfig.row;
+    this.col = kingConfig.col;
     this.side = config.FIGURE_SIZE;
-    this.name = pawnObject.name;
-    this.color = (pawnObject.color ? pawnObject.color : 'white');
+    this.name = kingConfig.name;
+    this.color = (kingConfig.color ? kingConfig.color : 'white');
 }
 
 King.prototype.create = function(context){
@@ -17,9 +17,23 @@ King.prototype.create = function(context){
     context.closePath();
 }
 
-King.prototype.createMovementTrail = function(currentPointerLocate, context, currentFigure){
-    console.log('here is the king');
-    var trailLocation = [
+King.prototype.filterAndCreateTrails = function(location, context){
+    var allFigures = boardManager.whiteFigures.concat(boardManager.blackFigures);
+    var oponentColor = boardManager.activeFigures[0].color == 'white' ? 'black' : 'white';
+    var currentFigure = helpers.findFigureByLocation(allFigures, location)[0];
+
+    if(!currentFigure){ //check if there are any of your own figures around, which stay on the current fig way
+        helpers.createTrail(location, 'King', context);
+    }else{
+        if(currentFigure.color == oponentColor){
+            var targetLocation = {row: currentFigure.row, col: currentFigure.col, target: true}
+            helpers.createTrail(targetLocation, 'King', context, 'red');
+        }
+    }
+}
+
+King.prototype.createMovementTrail = function(currentPointerLocate, context){
+    var trailLocations = [
         {
             row: currentPointerLocate.row - 1,
             col: currentPointerLocate.col
@@ -43,19 +57,23 @@ King.prototype.createMovementTrail = function(currentPointerLocate, context, cur
         {
             row: currentPointerLocate.row + 1,
             col: currentPointerLocate.col - 1
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col + 1
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col - 1
         }
     ];
-    trailLocation.forEach(location => {
-        if(helpers.isThisLocationInTheBoard(location)){
-            var kingTrail = new MoveTrail({
-                row : location.row,
-                col : location.col,
-                name : 'King'
-            });
-            kingTrail.create(context);
-            boardManager.currentMovementTrails.push(kingTrail);    
+   
+    trailLocations.forEach(location => {
+        if(helpers.isThisLocationInTheBoard(location)){  //check and show only trails which are in the board
+            this.filterAndCreateTrails(location, context);
         }
     });
-    
-    
+}
+King.prototype.move = function(currentPointerLocate, currentFigure){
+    helpers.setExactFigureLocation(boardManager.activeFigures, currentFigure, currentPointerLocate);
 }
