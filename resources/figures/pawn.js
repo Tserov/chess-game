@@ -21,9 +21,12 @@ Pawn.prototype.filterAndCreateTrails = function(location, context, currentPointe
     var oponentColor = boardManager.activeFigures[0].color == 'white' ? 'black' : 'white';
     var currentFigure = helpers.findFigureByLocation(allFigures, location)[0];
     var forwardLocation = {row: currentPointerLocate.row - 1, col: currentPointerLocate.col};
+    if(!currentFigure){ //to do
+        location.col == forwardLocation.col ? 
+        helpers.createTrail(forwardLocation, 'King', context)
+        :
+        null;
 
-    if(!currentFigure){ //check if there are any of your own figures around, which stay on the current fig way
-        helpers.createTrail(forwardLocation, 'King', context);
     }else{
         if(currentFigure.color == oponentColor && currentFigure.col !== forwardLocation.col){
             var targetLocation = {row: currentFigure.row, col: currentFigure.col, target: true}
@@ -36,15 +39,15 @@ Pawn.prototype.createMovementTrail = function(currentPointerLocate, context){
     var trailLocation = [
         {
             row: currentPointerLocate.row - 1,
-            col: currentPointerLocate.col
-        },
-        {
-            row: currentPointerLocate.row - 1,
             col: currentPointerLocate.col + 1
         },
         {
             row: currentPointerLocate.row - 1,
             col: currentPointerLocate.col - 1
+        },
+        {
+            row: currentPointerLocate.row - 1,
+            col: currentPointerLocate.col
         }
     ];
     trailLocation.forEach(location =>{

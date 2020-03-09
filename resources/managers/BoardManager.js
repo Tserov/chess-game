@@ -12,20 +12,22 @@ boardManager.init = function(canvas){
     this.isActiveGameMode = false;
     this.currentMovementTrails = [];
     this.currentCoosenFigure = null;
-
-    // this.drawBoard(this.context);
-    // this.createFigures(this.context);
-    // this.initFigures(this.context);
-    // this.setActiveFigures(this.whiteFigures);
 }
 boardManager.startGame = function(){
+    var canvas  = document.getElementById("chess-board");
+    boardManager.init(canvas);
     this.drawBoard(this.context);
     this.createFigures(this.context);
     this.initFigures(this.context);
     this.setActiveFigures(this.whiteFigures);
     this.setGameMode(true);
 }
-
+boardManager.resetGame = function(){
+    var main = document.getElementById('main');
+    main.classList.remove('game-mode');
+    boardManager.resetPlayersPoints();
+    boardManager.clear(this.context);
+}
 boardManager.drawBoard = function(context){
     for (let x = 0; x < 10; x++) {
         for (let y = 0; y < 10; y++) {
@@ -158,7 +160,7 @@ boardManager.isClickedTrail = function(pointer, currentTrails){
 boardManager.makeMove = function(pointer){
     if(this.isClickedTrail(pointer, this.currentMovementTrails)){
         this.currentCoosenFigure.move(pointer, this.currentCoosenFigure, this.currentMovementTrails); //move the figure
-        this.deleteFigureByLocation(pointer);
+        this.checkForPossibleTargets(pointer);
         this.clearMovementTrail();
         this.setGameMode(false);
     }else{
@@ -166,20 +168,32 @@ boardManager.makeMove = function(pointer){
     }
 }
 
-boardManager.addPoints = function(color, points){
-    console.log(points);
-    console.log('add ' + points.points + ' to ' + color + ' figures');
+boardManager.addPoints = function(color, targetFigure){
+    var pointsField = document.getElementById(`${color}-player-points`);
+    var availablePoints = pointsField.textContent;
+    var newPoints = targetFigure.points + parseInt(availablePoints);
+    pointsField.innerHTML = newPoints;
+}
+boardManager.resetPlayersPoints = function(){
+    document.getElementById(`white-player-points`).innerHTML = 0;
+    document.getElementById(`black-player-points`).innerHTML = 0;
+}
+boardManager.setPlayerNames = function(players){
+    var player1 = document.getElementById('white-player-name');
+    var player2 = document.getElementById('black-player-name');
+    player1.innerHTML = players.whiteFigures;
+    player2.innerHTML = players.blackFigures;
 }
 
-boardManager.deleteFigureByLocation = function(pointer){
+boardManager.checkForPossibleTargets = function(pointer){
     var clickedTrail = helpers.findFigureByLocation(this.currentMovementTrails, pointer);
     if(clickedTrail[0].color == 'red'){
         switch (this.activeFigures[0].color) {
             case 'black':
-                var points = helpers.findFigureByLocation(this.whiteFigures, pointer);
+                var targetFigure = helpers.findFigureByLocation(this.whiteFigures, pointer);
                 this.whiteFigures = //to do
                 this.whiteFigures.filter(figure => figure.col !== pointer.col || figure.row !== pointer.row);
-                this.addPoints('black', points[0]);
+                this.addPoints('black', targetFigure[0]);
                 break;
 
             case 'white':

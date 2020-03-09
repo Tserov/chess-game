@@ -18,6 +18,15 @@
         .main{
             position: relative;
         }
+        *{
+            box-sizing: border-box;
+        }
+        .btn{
+            padding: 15px 20px;
+            background: linear-gradient(0deg, #2F241B, #5d4a3b);
+            color: #fff;
+            border: none;
+        }
         #chess-board{
             /* width: 800px;
             height: 800px; */
@@ -63,22 +72,27 @@
         }
         #starting-screen{
             position: fixed;
-            width: 900px;
-            height: 520px;
-            top: calc(50% - 420px);
-            left: calc(50% - 450px);
+            width: 700px;
+            height: 400px;
+            top: calc(50% - 300px);
+            left: calc(50% - 350px);
             background: rgba(255,255,255,.9);
-            background: linear-gradient(90deg, #b19490de, #ffc675eb);
+            background: linear-gradient(90deg, #b19490, #ffc675);
             color: #222;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            border: 3px solid #333;
             box-shadow: 0px 0px 150px 50px rgba(0,0,0,.5);
             font-size: 20px;
             border-radius: 50px 0 50px;
+            border: 1px solid #2f241b6b;
+            color: #2F241B;
+        }
+        #starting-screen .welcome-screen{
+            width: 100%;
+            text-align: center;
         }
         #start-game{
             padding: 14px 20px;
@@ -176,14 +190,117 @@
         .main.game-mode #game-legend{
             display: block;
         }
+        .main .player-info-board{
+            position: fixed;
+            bottom: 20px;
+            width: 350px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 10px 0 10px 0;
+            padding: 30px;
+            display: none;
+            opacity: 0.9;
+        }
+        .main .player-info-board h3{
+            font-size: 25px;
+            margin:0 0 5px 0;
+        }
+        .main .player-info-board p{
+            margin: 0;
+        }
+        .main .player-info-board span{
+            font-size: 30px;
+        }
+        .main .player-info-board sup{
+            margin-left: 4px;
+            line-height: normal;
+            font-size: 12px;
+        }
+        .main .player-info-board:hover{
+            opacity: 1;
+        }
+        .main.game-mode .player-info-board{
+            display: flex;
+        }
+        .main .player-info-board::after{
+            content: '';
+            position: absolute;
+            height: calc(100% - 30px);
+            width: calc(100% - 30px);
+            left: 15px;
+            top: 15px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0 10px 0 10px;
+            opacity: 0.5;
+        }
+        .main .player-info-board#white-figures-board{
+            background: #E3BF88;
+            color: #2F241B;
+            left: 20px;
+        }
+        .main .player-info-board.white::after{
+            border-color: #2F241B;
+        }
+        .main .player-info-board.black::after{
+            border-color: #E3BF88;
+        }
+        .main .player-info-board#black-figures-board{
+            background: #2F241B;
+            color: #E3BF88;
+            right: 20px;
+        }
+        .play-screen{
+            text-align: center;
+            display: none;
+        }
+        input{
+            padding: 12px 15px;
+            background: transparent;
+            border: 1px solid #2F241B;
+            display: block;
+            width: 100%;
+            min-width: 300px;
+        }
+        label{
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        #starting-screen.play-mode .play-screen{
+            display: block;
+        }
+        #starting-screen.play-mode .welcome-screen{
+            display: none;
+        }
     </style>
 </head>
 <body>
     <main id="main" class="main">
         <div id="starting-screen">
-            <h1>Welcome to chess game.</h1>
-            <p>Click the button below to start playing.</p>
-            <button id="start-game">Start new game</button>
+            <div class="welcome-screen">
+                <h1>Welcome to chess game.</h1>
+                <p>Click the button below to start playing.</p>
+                <button class="btn" id="start-game">Start new game</button>
+            </div>
+            <div class="play-screen">
+                <h2>Input players name</h2>
+                <p>
+                    <label for="player1">White figures's player name</label>
+                    <input id="player1" value="Player1">
+                </p>
+                <p>
+                    <label for="player2">Black figures's player name</label>
+                    <input id="player2" value="Player2">
+                </p>
+                <button class="btn" id="play-game">Play</button>
+            </div>
         </div>
         <div style="display: none;" class="figure-images">
             <img src="resources/images/pawn-black.png" id="pawn-black">
@@ -209,8 +326,7 @@
         <div class="game-wrap">
             <canvas width="800" height="800" id="chess-board">
             </canvas>
-        </div>
-        
+        </div>   
 
         <div id="change-turn">
             <span class="toggle"></span>
@@ -219,8 +335,17 @@
 
         <div id="game-legend">
             <h3>Game terminal</h3>
-
         </div>
+
+        <div class="player-info-board white" id="white-figures-board">
+            <h3><span id="white-player-name"></span></h3>
+            <p><span id="white-player-points">0</span><sup>points</sup></p>
+        </div>
+        <div class="player-info-board black" id="black-figures-board">
+            <h3><span id="black-player-name"></span></h3>
+            <p><span id="black-player-points">0</span><sup>points</sup></p>
+        </div>
+        <div id="reset-game">reset game</div>
     </main>
 
     <script src="resources/config/config.js"></script>

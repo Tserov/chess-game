@@ -61,6 +61,7 @@ helpers.createTrail = function(location, trailName, context, color){
         name : trailName,
         color : color ? color : 'green'
     });
+    console.log(trail);
     trail.create(context);
     boardManager.currentMovementTrails.push(trail); 
 }

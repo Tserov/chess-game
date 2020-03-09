@@ -3,6 +3,7 @@ var Bishop = function(pawnObject){
     this.col = pawnObject.col;
     this.side = config.FIGURE_SIZE;
     this.name = pawnObject.name;
+    this.points = pawnObject.points;
     this.color = (pawnObject.color ? pawnObject.color : 'white');
 }
 

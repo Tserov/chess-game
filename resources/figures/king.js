@@ -3,6 +3,7 @@ var King = function(kingConfig){
     this.col = kingConfig.col;
     this.side = config.FIGURE_SIZE;
     this.name = kingConfig.name;
+    this.points = kingConfig.points;
     this.color = (kingConfig.color ? kingConfig.color : 'white');
 }
 
