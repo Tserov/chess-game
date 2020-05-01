@@ -279,6 +279,25 @@
         #starting-screen.play-mode .welcome-screen{
             display: none;
         }
+        .danger{
+            color: red;
+        }
+        .success{
+            color: green;
+        }
+        #game-legend{
+            overflow: hidden;
+            padding: 0 5px 10px 5px;
+        }
+        #game-legend-terminal{
+            list-style-type: none;
+            margin: 0;
+            text-align: left;
+            padding: 0 10px;
+            height: 320px;
+            overflow: auto;
+            width: calc(100% + 18px);
+        }
     </style>
 </head>
 <body>
@@ -335,6 +354,9 @@
 
         <div id="game-legend">
             <h3>Game terminal</h3>
+            <ul id="game-legend-terminal">
+
+            </ul>
         </div>
 
         <div class="player-info-board white" id="white-figures-board">

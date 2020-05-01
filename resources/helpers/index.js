@@ -84,3 +84,11 @@ helpers.setExactFigureLocation = function(figures, currentFigureLocation, curren
 helpers.removeFigureByCollection = function(figuresCollection, location){
     return figuresCollection.filter(figure => figure.row !== location.row && figure.col !== location.col);
 }
+
+helpers.printInGameTerminal = function(text){
+    var terminal = document.getElementById('game-legend-terminal');
+    var node = document.createElement("LI");
+    // var textnode = document.createTextNode(text);
+    node.innerHTML = text;
+    terminal.appendChild(node);
+}

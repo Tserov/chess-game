@@ -21,6 +21,7 @@ boardManager.startGame = function(){
     this.initFigures(this.context);
     this.setActiveFigures(this.whiteFigures);
     this.setGameMode(true);
+    helpers.printInGameTerminal('Game: Starting the game..');
 }
 boardManager.resetGame = function(){
     var main = document.getElementById('main');
@@ -163,8 +164,10 @@ boardManager.makeMove = function(pointer){
         this.checkForPossibleTargets(pointer);
         this.clearMovementTrail();
         this.setGameMode(false);
+        helpers.printInGameTerminal(`<b>Game</b>: ${this.currentCoosenFigure.name} is moved into col:${pointer.col}, row:${pointer.row}`);
     }else{
         this.clearMovementTrail();
+        helpers.printInGameTerminal(`<b>Game:</b> Selected figure is removed.`);
     }
 }
 
@@ -173,6 +176,7 @@ boardManager.addPoints = function(color, targetFigure){
     var availablePoints = pointsField.textContent;
     var newPoints = targetFigure.points + parseInt(availablePoints);
     pointsField.innerHTML = newPoints;
+    helpers.printInGameTerminal(`<b>Game</b>: <span class="success">${color} player kills ${targetFigure.name} and gets ${newPoints} points</span>`);
 }
 boardManager.resetPlayersPoints = function(){
     document.getElementById(`white-player-points`).innerHTML = 0;

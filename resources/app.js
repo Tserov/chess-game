@@ -1,6 +1,5 @@
 var canvas  = document.getElementById("chess-board");
 // boardManager.init(canvas);
-
 var main = document.getElementById('main');
 var gameWrap = document.getElementsByClassName('game-wrap')[0];
 var startGameBtn = document.getElementById('start-game');
@@ -45,22 +44,31 @@ canvas.addEventListener('mousedown', function(e){
         }else{
             if(activeFigure){
                 boardManager.showFigureTrailMovement(pointer, activeFigure);
+                console.log(activeFigure);
+                helpers.printInGameTerminal(`<b>Game</b>: ${activeFigure.name} is choosen.`);
             }else{
-                alert('Please choose one of your figures!');
+                console.log('Please choose one of your figures!');
+                helpers.printInGameTerminal('<b>Game</b>: <span class="danger">Please choose one of your figures to play!</span>');
             }
         }
     }else{
-        alert('Game mode is not activated');
+        console.log('Game mode is not activated');
+        helpers.printInGameTerminal('<b>Game</b>: <span class="danger">Change turn!</span>');
     }
 });
 
 toggleTurnBtn.addEventListener('click', function(){
-    boardManager.changePlayerTurn(); 
-    if(changeTurnBtn.classList.contains('active')){
-        changeTurnBtn.classList.remove('active');
-        gameWrap.style.transform = 'rotate(0deg)';
+    if(!boardManager.isActiveGameMode){
+        boardManager.changePlayerTurn(); 
+        if(changeTurnBtn.classList.contains('active')){
+            changeTurnBtn.classList.remove('active');
+            gameWrap.style.transform = 'rotate(0deg)';
+        }else{
+            changeTurnBtn.classList.add('active');
+            gameWrap.style.transform = 'rotate(360deg)';
+        }
     }else{
-        changeTurnBtn.classList.add('active');
-        gameWrap.style.transform = 'rotate(360deg)';
+        helpers.printInGameTerminal('<b>Game</b>: <span class="danger">It is your turn!</span>');
+        console.log('Game mode is activated');
     }
 });
