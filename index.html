@@ -39,7 +39,7 @@
             border-top: 2px solid #4a371a;
         }
         .game-wrap{
-            width: 800px;
+            width: 700px;
             /* height: 800px; */
             margin: 70px auto 0;
             display: block; 
@@ -298,6 +298,20 @@
             overflow: auto;
             width: calc(100% + 18px);
         }
+        @media only screen and (max-width: 1400px){
+            .main .player-info-board{
+                width: 280px;
+                height: 120px;
+            }
+            .main .player-info-board h3{
+                font-size: 22px;
+            }
+            #game-legend{
+                right: 20px;
+                width: 260px;
+                font-size: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -343,7 +357,7 @@
         </div>
         
         <div class="game-wrap">
-            <canvas width="800" height="800" id="chess-board">
+            <canvas width="700" height="700" id="chess-board">
             </canvas>
         </div>   
 

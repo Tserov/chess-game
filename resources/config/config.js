@@ -1,7 +1,7 @@
 var config = {
-    BOARD_WIDTH : 800,
-    BOARD_HEIGHT : 800,
-    FIGURE_SIZE : 80,
+    BOARD_WIDTH : 700,
+    BOARD_HEIGHT : 700,
+    FIGURE_SIZE : 70,
     BOARD_COORDINATE_DIMENSION:{
         start_col: 0,
         end_col : 9,
